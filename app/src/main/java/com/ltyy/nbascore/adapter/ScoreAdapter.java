@@ -14,6 +14,7 @@ import java.util.List;
 public class ScoreAdapter extends FragmentStateAdapter {
 
     private List<Score> scores;
+    private List<ScoreFragment> fragments = new ArrayList<>();
 
     public ScoreAdapter(@NonNull FragmentActivity fragmentActivity, List<Score> scores) {
         super(fragmentActivity);
@@ -23,7 +24,9 @@ public class ScoreAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        return ScoreFragment.newInstance(scores.get(position));
+        ScoreFragment fragment = ScoreFragment.newInstance(scores.get(position));
+        fragments.add(fragment);
+        return fragment;
     }
 
     @Override
@@ -31,7 +34,7 @@ public class ScoreAdapter extends FragmentStateAdapter {
         return scores == null ? 0 : scores.size();
     }
 
-    public void updateData(int position, MyFragment fragment) {
+    public void updateData(int position, ScoreFragment fragment) {
         fragments.set(position, fragment);
         notifyItemChanged(position);
     }
