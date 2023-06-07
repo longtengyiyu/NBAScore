@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">NBA Scores</string>
+    <string name="tips_games">no games</string>
+    <string name="tips_not_started">not started</string>
+    <string name="tips_in_progress">in progress</string>
+    <string name="tips_completed">completed</string>
+</resources>
