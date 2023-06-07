@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import com.ltyy.nbascore.app.AppParams;
 import com.ltyy.nbascore.bean.Score;
 import com.ltyy.nbascore.utils.DataUtils;
+import com.ltyy.nbascore.widget.ScoreView;
 
 public class ScoreFragment extends Fragment {
 
@@ -20,7 +21,7 @@ public class ScoreFragment extends Fragment {
     private TextView tvStatus;
     private TextView tvHomeFieldName;
     private TextView tvAwayFieldName;
-    private TextView tvScores;
+    private ScoreView ViewScores;
     private TextView tvStartTime;
 
     public static ScoreFragment newInstance(Score score){
@@ -48,7 +49,7 @@ public class ScoreFragment extends Fragment {
 
     private void findViews(View v){
         tvStatus = v.findViewById(R.id.tv_status);
-        tvScores = v.findViewById(R.id.tv_scores);
+        ViewScores = v.findViewById(R.id.view_score);
         tvHomeFieldName = v.findViewById(R.id.tv_home_field_name);
         tvAwayFieldName = v.findViewById(R.id.tv_away_field_name);
         tvStartTime = v.findViewById(R.id.tv_start_time);
@@ -73,7 +74,7 @@ public class ScoreFragment extends Fragment {
         }
         tvHomeFieldName.setText(score.getHomeField());
         tvAwayFieldName.setText(score.getAwayField());
-        tvScores.setText(score.getHomeFieldScores() + ":" + score.getAwayFieldScores());
+        ViewScores.bindData(score.getHomeFieldScores(), score.getAwayFieldScores());
         String time = DataUtils.getCurrentDateFormat(score.getStartTime(), "HH:mm");
         tvStartTime.setText(time);
     }
