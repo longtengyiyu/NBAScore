@@ -1,6 +1,10 @@
 package com.ltyy.nbascore.api;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
 import com.ltyy.nbascore.BuildConfig;
+import com.ltyy.nbascore.bean.Schedule;
 import com.ltyy.nbascore.bean.Score;
 import com.ltyy.nbascore.request.MainRequest;
 
@@ -13,6 +17,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Api {
+    private static final String TAG = Api.class.getSimpleName();
     public volatile static Api INSTANCE = null;
     private ApiService apiService;
 
@@ -80,6 +85,31 @@ public class Api {
                 if (callback != null){
                     callback.onItemEmpty();
                 }
+            }
+        });
+    }
+
+    public void getSchedule(String data, String locale, String tz, MainRequest.OnScheduleResponse callback){
+        Call<Schedule> call = apiService.getSchedule(data, locale, tz);
+        Log.d(TAG, "request url --> " + call.request().url().toString());
+        call.enqueue(new Callback<Schedule>() {
+            @Override
+            public void onResponse(Call<Schedule> call, Response<Schedule> response) {
+                Schedule s = response.body();
+                Log.d(TAG, "schedule --> " + new Gson().toJson(s));
+                if (callback != null){
+                    if (s != null){
+                        callback.schedule(s);
+                    }else {
+                        callback.onError();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Schedule> call, Throwable t) {
+                Log.d(TAG, "onFailure --> " + t.getMessage());
+                callback.onError();
             }
         });
     }

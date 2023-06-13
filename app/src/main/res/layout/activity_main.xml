@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textColor="@color/color_d4"
+        android:visibility="gone"
         android:textSize="12sp"
         android:text="@string/tips_games"/>
 

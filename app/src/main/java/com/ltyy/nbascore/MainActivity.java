@@ -1,28 +1,37 @@
 package com.ltyy.nbascore;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.wearable.activity.WearableActivity;
+import android.util.Log;
+import android.widget.Adapter;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback;
 
+import com.google.gson.Gson;
 import com.ltyy.nbascore.adapter.ScoreAdapter;
+import com.ltyy.nbascore.bean.Date;
+import com.ltyy.nbascore.bean.Game;
+import com.ltyy.nbascore.bean.Payload;
+import com.ltyy.nbascore.bean.Schedule;
 import com.ltyy.nbascore.bean.Score;
+import com.ltyy.nbascore.bean.Season;
 import com.ltyy.nbascore.request.MainRequest;
+import com.ltyy.nbascore.utils.DataUtils;
 import com.ltyy.nbascore.utils.ViewsUtils;
 
 import java.util.List;
 
-public class MainActivity extends FragmentActivity implements MainRequest.OnListResponse, MainRequest.OnItemResponse {
+public class MainActivity extends FragmentActivity implements MainRequest.OnScheduleResponse {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     private ViewPager2 viewPager;
-    private ScoreAdapter adapter;
     private TextView tvTips;
-    private MainRequest request;
-    private int currentPage;
-    private List<Score> list;
+    private PowerManager.WakeLock wakeLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +39,15 @@ public class MainActivity extends FragmentActivity implements MainRequest.OnList
         setContentView(R.layout.activity_main);
         findViews();
         onRequest();
+        keepScreenOn();
+    }
+
+    private void keepScreenOn(){
+        // 获取 PowerManager 实例
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        // 设置 WakeLock 标志，SCREEN_DIM_WAKE_LOCK 表示屏幕保持暗淡亮起
+        wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "MyApp:WakeLockTag");
+        wakeLock.acquire(); // 获取 WakeLock
     }
 
     private void findViews(){
@@ -39,44 +57,58 @@ public class MainActivity extends FragmentActivity implements MainRequest.OnList
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                currentPage = position;
-                onItemRequest();
             }
         });
     }
 
     private void onRequest(){
-        request = new MainRequest();
-        request.getList(this);
-    }
-
-    private void onItemRequest(){
-        request.getItemById(list.get(currentPage).getId(), this);
+        MainRequest.getInstance().loadData(this);
     }
 
     @Override
-    public void list(List<Score> list) {
-        this.list = list;
-        ViewsUtils.setViewsGone(tvTips);
-        ViewsUtils.setViewsVisible(viewPager);
-        adapter = new ScoreAdapter(this, list);
-        viewPager.setAdapter(adapter);
-        onItemRequest();
+    public void schedule(Schedule schedule) {
+        if (schedule != null){
+            Log.d(TAG, "schedule --> " + new Gson().toJson(schedule));
+            Payload payload = schedule.getPayload();
+            if (payload != null){
+                List<Date> dates = payload.getDates();
+                if (dates != null && !dates.isEmpty()){
+                    for (Date date : dates){
+                        long utcMillis = date.getUtcMillis();
+                        String gameDate = DataUtils.getCurrentDateFormat(utcMillis, "yyyy-MM-dd");
+                        String currDate = DataUtils.getCurrentDateFormat(System.currentTimeMillis(), "yyyy-MM-dd");
+                        Log.d(TAG, "gameDate: " + gameDate);
+                        Log.d(TAG, "currDate: " + currDate);
+                        if (gameDate.equals(currDate)){
+                            List<Game> games = date.getGames();
+                            if (games != null && !games.isEmpty()){
+                                ViewsUtils.setViewsGone(tvTips);
+                                ViewsUtils.setViewsVisible(viewPager);
+                                ScoreAdapter adapter = new ScoreAdapter(this, games);
+                                viewPager.setAdapter(adapter);
+                                Log.d(TAG, "adapter 设置成功");
+                            }else {
+                                ViewsUtils.setViewsVisible(tvTips);
+                                ViewsUtils.setViewsGone(viewPager);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
-    public void onListEmpty() {
-        ViewsUtils.setViewsGone(viewPager);
-        ViewsUtils.setViewsVisible(tvTips);
-    }
-
-    @Override
-    public void item(Score score) {
+    public void onError() {
 
     }
 
     @Override
-    public void onItemEmpty() {
-
+    protected void onDestroy() {
+        super.onDestroy();
+        if (wakeLock != null && wakeLock.isHeld()) {
+            wakeLock.release(); // 释放 WakeLock
+        }
     }
 }

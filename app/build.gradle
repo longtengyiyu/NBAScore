@@ -13,7 +13,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        buildConfigField "String", "BASE_URL", "\"https://api.114pan.online\""
+        buildConfigField "String", "BASE_URL", "\"https://m.china.nba.cn\""
     }
 
     compileOptions {
