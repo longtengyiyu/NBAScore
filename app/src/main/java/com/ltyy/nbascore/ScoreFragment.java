@@ -73,6 +73,7 @@ public class ScoreFragment extends Fragment implements MainRequest.OnScheduleRes
     @Override
     public void onResume() {
         super.onResume();
+        ViewsUtils.setViewsVisible(progressBar);
         MainRequest.getInstance().loadData(this);
     }
 

@@ -26,10 +26,13 @@ import com.ltyy.nbascore.utils.ViewsUtils;
 
 import java.util.List;
 
+import me.relex.circleindicator.CircleIndicator3;
+
 public class MainActivity extends FragmentActivity implements MainRequest.OnScheduleResponse {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private ViewPager2 viewPager;
+    private CircleIndicator3 indicator;
     private TextView tvTips;
     private PowerManager.WakeLock wakeLock;
 
@@ -51,7 +54,7 @@ public class MainActivity extends FragmentActivity implements MainRequest.OnSche
     }
 
     private void findViews(){
-        viewPager =  findViewById(R.id.view_pager);
+        viewPager = findViewById(R.id.view_pager);
         tvTips = findViewById(R.id.tv_tips);
         viewPager.registerOnPageChangeCallback(new OnPageChangeCallback(){
             @Override
@@ -59,6 +62,12 @@ public class MainActivity extends FragmentActivity implements MainRequest.OnSche
                 super.onPageSelected(position);
             }
         });
+        indicator = findViewById(R.id.indicator);
+    }
+
+    private void setIndicators(ScoreAdapter adapter){
+        indicator.setViewPager(viewPager);
+        adapter.registerAdapterDataObserver(indicator.getAdapterDataObserver());
     }
 
     private void onRequest(){
@@ -86,14 +95,21 @@ public class MainActivity extends FragmentActivity implements MainRequest.OnSche
                                 ViewsUtils.setViewsVisible(viewPager);
                                 ScoreAdapter adapter = new ScoreAdapter(this, games);
                                 viewPager.setAdapter(adapter);
+                                setIndicators(adapter);
                                 Log.d(TAG, "adapter 设置成功");
                             }else {
                                 ViewsUtils.setViewsVisible(tvTips);
                                 ViewsUtils.setViewsGone(viewPager);
                             }
                             break;
+                        }else{
+                            ViewsUtils.setViewsVisible(tvTips);
+                            ViewsUtils.setViewsGone(viewPager);
                         }
                     }
+                }else{
+                    ViewsUtils.setViewsVisible(tvTips);
+                    ViewsUtils.setViewsGone(viewPager);
                 }
             }
         }
@@ -101,7 +117,8 @@ public class MainActivity extends FragmentActivity implements MainRequest.OnSche
 
     @Override
     public void onError() {
-
+        ViewsUtils.setViewsVisible(tvTips);
+        ViewsUtils.setViewsGone(viewPager);
     }
 
     @Override
