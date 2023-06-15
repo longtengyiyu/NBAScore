@@ -3,9 +3,7 @@ package com.ltyy.nbascore;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.support.wearable.activity.WearableActivity;
 import android.util.Log;
-import android.widget.Adapter;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
@@ -18,8 +16,6 @@ import com.ltyy.nbascore.bean.Date;
 import com.ltyy.nbascore.bean.Game;
 import com.ltyy.nbascore.bean.Payload;
 import com.ltyy.nbascore.bean.Schedule;
-import com.ltyy.nbascore.bean.Score;
-import com.ltyy.nbascore.bean.Season;
 import com.ltyy.nbascore.request.MainRequest;
 import com.ltyy.nbascore.utils.DataUtils;
 import com.ltyy.nbascore.utils.ViewsUtils;

@@ -1,5 +1,6 @@
 package com.ltyy.nbascore.api;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -9,7 +10,11 @@ import com.ltyy.nbascore.bean.Score;
 import com.ltyy.nbascore.request.MainRequest;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -22,10 +27,29 @@ public class Api {
     private ApiService apiService;
 
     private Api(){
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        OkHttpClient okHttpClient = builder
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(false)
+                .build();
+        Interceptor requestInterceptor = chain -> {
+            Request request = chain.request()
+                    .newBuilder()
+                    .addHeader("user-agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36")
+                    .addHeader("content-type", "application/json")
+                    .build();
+            return chain.proceed(request);
+        };
+        builder.addInterceptor(requestInterceptor);
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BuildConfig.BASE_URL)
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
         apiService = retrofit.create(ApiService.class);
     }
 
