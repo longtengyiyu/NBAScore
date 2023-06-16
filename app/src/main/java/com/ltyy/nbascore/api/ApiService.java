@@ -24,5 +24,8 @@ public interface ApiService {
                                @Query(value = "tz", encoded = false) String tz
     );
 
+    @GET("/nba/schedule/list")
+    Call<List<Score>> getScheduleList();
+
 
 }

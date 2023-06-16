@@ -62,9 +62,43 @@ public class MainRequest {
         });
     }
 
+    public void onGetList(long time, final OnListResponse response){
+        stopDispose();
+        Observable.timer(time, TimeUnit.SECONDS).subscribe(new Observer<Long>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                // 订阅时的操作
+                disposable = d;
+            }
+
+            @Override
+            public void onNext(Long value) {
+                // 定时执行的任务
+//                Api.getInstance().getItemById(id, response);
+
+                Api.getInstance().getScheduleList(response);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                // 发生错误时的操作
+                onGetList(6, response);
+            }
+
+            @Override
+            public void onComplete() {
+                // 完成时的操作
+            }
+        });
+    }
+
     public void loadData(final OnScheduleResponse response){
         String date = DataUtils.getCurrentDateFormat(System.currentTimeMillis(), "yyyy-MM-dd");
         Api.getInstance().getSchedule(date, "zh_CN", "+8", response);
+    }
+
+    public void getScheduleList(final OnListResponse callBack){
+        Api.getInstance().getScheduleList(callBack);
     }
 
     public void stopDispose(){

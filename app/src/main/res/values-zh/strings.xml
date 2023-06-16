@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">NBA比分</string>
     <string name="tips_games">今日暂无比赛</string>
-    <string name="tips_not_started">未开始</string>
+    <string name="tips_not_started">%s 开始</string>
     <string name="tips_in_progress">进行中</string>
     <string name="tips_completed">已结束</string>
     <string name="tips_period">第 %s 节</string>

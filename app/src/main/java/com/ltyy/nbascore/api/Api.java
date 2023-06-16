@@ -137,4 +137,30 @@ public class Api {
             }
         });
     }
+
+    public void getScheduleList(final MainRequest.OnListResponse callBack){
+        Call<List<Score>> call = apiService.getScheduleList();
+        Log.d(TAG, "request url --> " + call.request().url().toString());
+        call.enqueue(new Callback<List<Score>>() {
+            @Override
+            public void onResponse(Call<List<Score>> call, Response<List<Score>> response) {
+                List<Score> scores = response.body();
+                Log.d(TAG, "scores: " + new Gson().toJson(scores));
+                if (callBack != null){
+                    if (scores != null){
+                        callBack.list(scores);
+                    }else{
+                        callBack.onListEmpty();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Score>> call, Throwable t) {
+                Log.d(TAG, "onFailure: " + t.getMessage());
+                callBack.onListEmpty();
+            }
+        });
+    }
+
 }

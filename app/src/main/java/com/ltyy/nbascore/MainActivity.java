@@ -7,15 +7,18 @@ import android.util.Log;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback;
 
 import com.google.gson.Gson;
+import com.ltyy.nbascore.adapter.NewScoreAdapter;
 import com.ltyy.nbascore.adapter.ScoreAdapter;
 import com.ltyy.nbascore.bean.Date;
 import com.ltyy.nbascore.bean.Game;
 import com.ltyy.nbascore.bean.Payload;
 import com.ltyy.nbascore.bean.Schedule;
+import com.ltyy.nbascore.bean.Score;
 import com.ltyy.nbascore.request.MainRequest;
 import com.ltyy.nbascore.utils.DataUtils;
 import com.ltyy.nbascore.utils.ViewsUtils;
@@ -24,7 +27,7 @@ import java.util.List;
 
 import me.relex.circleindicator.CircleIndicator3;
 
-public class MainActivity extends FragmentActivity implements MainRequest.OnScheduleResponse {
+public class MainActivity extends FragmentActivity implements MainRequest.OnScheduleResponse, MainRequest.OnListResponse {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private ViewPager2 viewPager;
@@ -61,13 +64,14 @@ public class MainActivity extends FragmentActivity implements MainRequest.OnSche
         indicator = findViewById(R.id.indicator);
     }
 
-    private void setIndicators(ScoreAdapter adapter){
+    private void setIndicators(FragmentStateAdapter adapter){
         indicator.setViewPager(viewPager);
         adapter.registerAdapterDataObserver(indicator.getAdapterDataObserver());
     }
 
     private void onRequest(){
         MainRequest.getInstance().loadData(this);
+//        MainRequest.getInstance().getScheduleList(this);
     }
 
     @Override
@@ -118,10 +122,31 @@ public class MainActivity extends FragmentActivity implements MainRequest.OnSche
     }
 
     @Override
+    public void list(List<Score> list) {
+        if (list != null && !list.isEmpty()){
+            ViewsUtils.setViewsGone(tvTips);
+            ViewsUtils.setViewsVisible(viewPager);
+            NewScoreAdapter adapter = new NewScoreAdapter(this, list);
+            viewPager.setAdapter(adapter);
+            setIndicators(adapter);
+        }else{
+            ViewsUtils.setViewsVisible(tvTips);
+            ViewsUtils.setViewsGone(viewPager);
+        }
+    }
+
+    @Override
+    public void onListEmpty() {
+        ViewsUtils.setViewsVisible(tvTips);
+        ViewsUtils.setViewsGone(viewPager);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (wakeLock != null && wakeLock.isHeld()) {
             wakeLock.release(); // 释放 WakeLock
         }
     }
+
 }

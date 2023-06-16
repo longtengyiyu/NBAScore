@@ -3,120 +3,64 @@ package com.ltyy.nbascore.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Score implements Parcelable {
-    private long id;
-    private String homeField;
-    private String homeFieldSimple;
-    private String awayField;
-    private String awayFieldSimple;
-    private int homeFieldScores;
-    private int awayFieldScores;
+public class Score{
+   private String homeTeam;
+    private String homeTeamNameEn;
+    private String awayTeam;
+    private String awayTeamNameEn;
+    private int homeTeamScore;
+    private int awayTeamScore;
     private int status;
-    private long startTime;
-    private long createTime;
-    private long updateTime;
+    private String startTime;
+    private int gameType;
+    private String period;
 
-    protected Score(Parcel in) {
-        id = in.readLong();
-        homeField = in.readString();
-        homeFieldSimple = in.readString();
-        awayField = in.readString();
-        awayFieldSimple = in.readString();
-        homeFieldScores = in.readInt();
-        awayFieldScores = in.readInt();
-        status = in.readInt();
-        startTime = in.readLong();
-        createTime = in.readLong();
-        updateTime = in.readLong();
+    public String getHomeTeam() {
+        return homeTeam;
     }
 
-    public static final Creator<Score> CREATOR = new Creator<Score>() {
-        @Override
-        public Score createFromParcel(Parcel in) {
-            return new Score(in);
-        }
-
-        @Override
-        public Score[] newArray(int size) {
-            return new Score[size];
-        }
-    };
-
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setHomeTeam(String homeTeam) {
+        this.homeTeam = homeTeam;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
-        dest.writeString(homeField);
-        dest.writeString(homeFieldSimple);
-        dest.writeString(awayField);
-        dest.writeString(awayFieldSimple);
-        dest.writeInt(homeFieldScores);
-        dest.writeInt(awayFieldScores);
-        dest.writeInt(status);
-        dest.writeLong(startTime);
-        dest.writeLong(createTime);
-        dest.writeLong(updateTime);
+    public String getHomeTeamNameEn() {
+        return homeTeamNameEn;
     }
 
-    public long getId() {
-        return id;
+    public void setHomeTeamNameEn(String homeTeamNameEn) {
+        this.homeTeamNameEn = homeTeamNameEn;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public String getAwayTeam() {
+        return awayTeam;
     }
 
-    public String getHomeField() {
-        return homeField;
+    public void setAwayTeam(String awayTeamName) {
+        this.awayTeam = awayTeam;
     }
 
-    public void setHomeField(String homeField) {
-        this.homeField = homeField;
+    public String getAwayTeamNameEn() {
+        return awayTeamNameEn;
     }
 
-    public String getHomeFieldSimple() {
-        return homeFieldSimple;
+    public void setAwayTeamNameEn(String awayTeamNameEn) {
+        this.awayTeamNameEn = awayTeamNameEn;
     }
 
-    public void setHomeFieldSimple(String homeFieldSimple) {
-        this.homeFieldSimple = homeFieldSimple;
+    public int getHomeTeamScore() {
+        return homeTeamScore;
     }
 
-    public String getAwayField() {
-        return awayField;
+    public void setHomeTeamScore(int homeTeamScore) {
+        this.homeTeamScore = homeTeamScore;
     }
 
-    public void setAwayField(String awayField) {
-        this.awayField = awayField;
+    public int getAwayTeamScore() {
+        return awayTeamScore;
     }
 
-    public String getAwayFieldSimple() {
-        return awayFieldSimple;
-    }
-
-    public void setAwayFieldSimple(String awayFieldSimple) {
-        this.awayFieldSimple = awayFieldSimple;
-    }
-
-    public int getHomeFieldScores() {
-        return homeFieldScores;
-    }
-
-    public void setHomeFieldScores(int homeFieldScores) {
-        this.homeFieldScores = homeFieldScores;
-    }
-
-    public int getAwayFieldScores() {
-        return awayFieldScores;
-    }
-
-    public void setAwayFieldScores(int awayFieldScores) {
-        this.awayFieldScores = awayFieldScores;
+    public void setAwayTeamScore(int awayTeamScore) {
+        this.awayTeamScore = awayTeamScore;
     }
 
     public int getStatus() {
@@ -127,27 +71,27 @@ public class Score implements Parcelable {
         this.status = status;
     }
 
-    public long getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(long startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public long getCreateTime() {
-        return createTime;
+    public int getGameType() {
+        return gameType;
     }
 
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
+    public void setGameType(int gameType) {
+        this.gameType = gameType;
     }
 
-    public long getUpdateTime() {
-        return updateTime;
+    public String getPeriod() {
+        return period;
     }
 
-    public void setUpdateTime(long updateTime) {
-        this.updateTime = updateTime;
+    public void setPeriod(String period) {
+        this.period = period;
     }
 }
